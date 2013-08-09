@@ -144,7 +144,7 @@ class View {
     public function parseTemplate($template='') {
         $app_name=APP_NAME==basename(dirname($_SERVER['SCRIPT_FILENAME'])) && ''==__APP__?'':APP_NAME.'/';
         if(is_file($template)) {
-            $group  =  defined('GROUP_NAME')?GROUP_NAME.'/':'';
+            $group  =   defined('GROUP_NAME')?GROUP_NAME.'/':'';
             $theme  =   C('DEFAULT_THEME');
             // 获取当前主题的模版路径
             if(1==C('APP_GROUP_MODE')){ // 独立分组模式
@@ -156,11 +156,12 @@ class View {
             }
             return $template;
         }
-        $template = str_replace(':', '/', $template);
+        $depr       =   C('TMPL_FILE_DEPR');
+        $template   =   str_replace(':', $depr, $template);
         // 获取当前主题名称
-        $theme = $this->getTemplateTheme();
+        $theme      =   $this->getTemplateTheme();
         // 获取当前模版分组
-        $group   =  defined('GROUP_NAME')?GROUP_NAME.'/':'';
+        $group      =   defined('GROUP_NAME')?GROUP_NAME.'/':'';
         if(defined('GROUP_NAME') && strpos($template,'@')){ // 跨分组调用模版文件
             list($group,$template)  =   explode('@',$template);
             $group  .=   '/';
@@ -177,9 +178,9 @@ class View {
         // 分析模板文件规则
         if('' == $template) {
             // 如果模板文件名为空 按照默认规则定位
-            $template = MODULE_NAME . C('TMPL_FILE_DEPR') . ACTION_NAME;
-        }elseif(false === strpos($template, '/')){
-            $template = MODULE_NAME . C('TMPL_FILE_DEPR') . $template;
+            $template = MODULE_NAME . $depr . ACTION_NAME;
+        }elseif(false === strpos($template, $depr)){
+            $template = MODULE_NAME . $depr . $template;
         }
         return THEME_PATH.$template.C('TMPL_TEMPLATE_SUFFIX');
     }
